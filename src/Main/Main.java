@@ -7,7 +7,7 @@ import java.text.ParseException;
 import java.util.Hashtable;
 import java.util.Properties;
 
-public class DBAppTest {
+public class Main {
 
 	static void create() throws DBAppException, IOException {
 		Hashtable htblColNameType = new Hashtable();
