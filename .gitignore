@@ -1,1 +1,7 @@
 /bin/
+.settings
+classes
+.classpath
+.project
+docs
+data
