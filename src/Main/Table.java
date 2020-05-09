@@ -8,7 +8,6 @@ import java.util.Hashtable;
 
 public class Table {
 
-	String path;
 	String strTableName;
 	String strClusteringKeyColumn;
 	Hashtable<String, String> htblColNameType;
@@ -22,7 +21,6 @@ public class Table {
 			throw new DBAppException("Clustering Key is not defined in the Table");
 		createMetaData();
 		
-		// path not initialzied
 	}
 
 	void createMetaData() throws IOException {
@@ -33,43 +31,11 @@ public class Table {
 		PrintWriter out = new PrintWriter(bw);
 		for (String colName : htblColNameType.keySet()) {
 			String dataType = htblColNameType.get(colName);
-			// I set the INDEXED field to false,but it should be set in the function
-			// createBitmapIndex
 			out.print(strTableName + ", " + colName + ", " + dataType + ", "
 					+ (colName.equals(strClusteringKeyColumn) ? "True, " : "False, ") + "False\n");
 		}
 		out.flush();
 		out.close();
 		fileWriter.close();
-	}
-
-	public void insertIntoTable(Hashtable<String, Object> htblColNameValue) throws DBAppException {
-		/*
-		 * 
-		 * make sure to handle the name of .class files load page by page to search for
-		 * the place of the tuple using the clustered column if it is the right place,
-		 * update the page shift down and write it
-		 */
-	}
-
-	public void updateTable(String strKey, Hashtable<String, Object> htblColNameValue) throws DBAppException {
-		/*
-		 * 
-		 * make sure to handle the name of .class files load page by page to search for
-		 * the place of the tuple using the clustered column if it is the right place,
-		 * update the page and write it
-		 */
-
-	}
-
-	public void deleteFromTable(Hashtable<String, Object> htblColNameValue) throws DBAppException {
-
-		/*
-		 * 
-		 * make sure to handle the name of .class files load page by page to search for
-		 * the place of the tuple using the clustered column if it is the right place,
-		 * update the page and write it
-		 */
-
 	}
 }
