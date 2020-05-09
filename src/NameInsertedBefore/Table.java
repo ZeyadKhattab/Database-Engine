@@ -14,12 +14,14 @@ public class Table {
 	Hashtable<String, String> htblColNameType;
 
 	Table(String strTableName, String strClusteringKeyColumn, Hashtable<String, String> htblColNameType)
-			throws IOException {
+			throws IOException, DBAppException {
 		this.strTableName = strTableName;
 		this.strClusteringKeyColumn = strClusteringKeyColumn;
 		this.htblColNameType = htblColNameType;
+		if(!htblColNameType.containsKey(strClusteringKeyColumn))
+			throw new DBAppException("Clustering Key is not defined in the Table");
 		createMetaData();
-		//check if clustering Column is inside the htbl
+		
 		// path not initialzied
 	}
 
