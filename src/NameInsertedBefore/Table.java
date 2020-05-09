@@ -19,7 +19,7 @@ public class Table {
 		this.strClusteringKeyColumn = strClusteringKeyColumn;
 		this.htblColNameType = htblColNameType;
 		createMetaData();
-
+		//check if clustering Column is inside the htbl
 		// path not initialzied
 	}
 

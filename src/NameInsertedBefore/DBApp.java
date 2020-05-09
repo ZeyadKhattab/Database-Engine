@@ -16,22 +16,21 @@ public class DBApp {
 		tables = new ArrayList();
 	}
 
-	public static Boolean ExistTable(String strTableName) throws IOException {
-		List<List<String>> allinfoInMetaData = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new FileReader("data/metadata.csv"))) {
-			String line;
-			int co = 0;
-			while ((line = br.readLine()) != null) {
-				String[] values = line.split(",");
-				if (values[0].equals(strTableName)) {
-					return true;
-				}
-			}
-
-		} catch (Exception ex) {
+	public static boolean existTable(String strTableName) throws IOException {
+		File metadata = new File("data/metadata.csv");
+		if (!metadata.exists())
 			return false;
+		BufferedReader br = new BufferedReader(new FileReader(metadata));
+		String line;
+		while ((line = br.readLine()) != null) {
+			String[] values = line.split(",");
+			if (values[0].equals(strTableName))
+				return true;
+
 		}
+
 		return false;
+
 	}
 
 	public static Table getTable(String strTableName) {
@@ -98,58 +97,61 @@ public class DBApp {
 
 	public static void createTable(String strTableName, String strClusteringKeyColumn,
 			Hashtable<String, String> htblColNameType) throws DBAppException, IOException {
-		if (!ExistTable(strTableName))
+		if (!existTable(strTableName))
 			new Table(strTableName, strClusteringKeyColumn, htblColNameType);
 		else
 			throw new DBAppException();
 	}
 
-	static void validateEntry(String strTableName, Hashtable<String, Object> htblColNameValue, boolean insert)
+	static boolean metaDataExist() {
+		File metadata = new File("data/metadata.csv");
+		return metadata.exists();
+	}
+
+	static boolean validateEntry(String strTableName, Hashtable<String, Object> htblColNameValue, boolean insert)
 			throws DBAppException, FileNotFoundException, IOException {
-		List<List<String>> allinfoInMetaData = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new FileReader("data/metadata.csv"))) {
-			String line;
-			int co = 0;
-			int f = 0;
-			while ((line = br.readLine()) != null) {
-				String[] values = line.split(",");
-				if (values[0].equals(strTableName)) {
-					co++;
-					Object givenValue = htblColNameValue.get(values[1].substring(1));
-					if (givenValue == null)
-						continue;
-					if (values[2].substring(1).equals("java.lang.String"))
-						if (!(givenValue instanceof String))
-							throw new DBAppException();
-					if (values[2].substring(1).equals("java.lang.Integer"))
-						if (!(givenValue instanceof Integer))
-							throw new DBAppException();
-					if (values[2].substring(1).equals("java.lang.Double"))
-						if (!(givenValue instanceof Double))
-							throw new DBAppException();
-					if (values[2].substring(1).equals("java.lang.Boolean"))
-						if (!(givenValue instanceof Boolean)) {
-							throw new DBAppException();
-						}
-
-					if (values[2].substring(1).equals("java.util.Date")) {
-
-						try {
-							new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
-									.parse(givenValue.toString());
-						} catch (ParseException e) {
-							throw new DBAppException();
-						}
-
+		BufferedReader br = new BufferedReader(new FileReader("data/metadata.csv"));
+		String line;
+		boolean foundClusteringKey = false;
+		while ((line = br.readLine()) != null) {
+			String[] values = line.split(", ");
+			if (values[0].equals(strTableName)) {
+				Object givenValue = htblColNameValue.get(values[1]);
+				if (givenValue == null)
+					continue;
+				if (values[2].equals("java.lang.String"))
+					if (!(givenValue instanceof String))
+						throw new DBAppException();
+				if (values[2].equals("java.lang.Integer"))
+					if (!(givenValue instanceof Integer))
+						throw new DBAppException();
+				if (values[2].equals("java.lang.Double"))
+					if (!(givenValue instanceof Double))
+						throw new DBAppException();
+				if (values[2].equals("java.lang.Boolean"))
+					if (!(givenValue instanceof Boolean)) {
+						throw new DBAppException();
 					}
-					if (givenValue != null && values[3].substring(1).equals("True"))
-						f = 1;
+
+				if (values[2].equals("java.util.Date")) {
+
+					try {
+						new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
+								.parse(givenValue.toString());
+					} catch (ParseException e) {
+						throw new DBAppException();
+					}
+
 				}
+				if (values[3].equals("True"))
+					foundClusteringKey = true;
 			}
-			co = insert ? co + 1 : co;
-			if (f == 0)
-				throw new DBAppException();
 		}
+		if (!foundClusteringKey) {
+			throw new DBAppException("You must insert the Clustering Key");
+
+		}
+		return true;
 	}
 
 	public static void insertIntoTable(String strTableName, Hashtable<String, Object> htblColNameValue)
@@ -170,8 +172,11 @@ public class DBApp {
 			int co = 0;
 			while ((line = br.readLine()) != null) {
 				String[] values = line.split(",");
-				if (values[0].equals(strTableName))
+				if (values[0].equals(strTableName)) {
+					System.err.println(values[0]);
+
 					co++;
+				}
 			}
 			tuple = new Object[Math.max(htblColNameValue.size(), co + 1)];
 		}
@@ -183,6 +188,7 @@ public class DBApp {
 			while ((line = br.readLine()) != null) {
 				String[] values = line.split(",");
 				if (values[0].equals(strTableName)) {
+					System.err.println("here2");
 					Object givenValue = htblColNameValue.get(values[1].substring(1));
 					tuple[idx++] = givenValue;
 				}
