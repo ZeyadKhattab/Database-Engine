@@ -164,7 +164,7 @@ public class DBApp {
 	}
 
 	static Object[] getValueInOrder(String strTableName, Hashtable<String, Object> htblColNameValue)
-			throws FileNotFoundException, IOException {
+			throws FileNotFoundException, IOException { // gets values to be inserted in same order as metadata
 
 		Object[] tuple;
 		try (BufferedReader br = new BufferedReader(new FileReader("data/metadata.csv"))) {
@@ -173,12 +173,10 @@ public class DBApp {
 			while ((line = br.readLine()) != null) {
 				String[] values = line.split(",");
 				if (values[0].equals(strTableName)) {
-					System.err.println(values[0]);
-
 					co++;
 				}
 			}
-			tuple = new Object[Math.max(htblColNameValue.size(), co + 1)];
+			tuple = new Object[Math.max(htblColNameValue.size(), co + 1)]; // co+1 should always be greater
 		}
 		try (BufferedReader br = new BufferedReader(new FileReader("data/metadata.csv"))) {
 			String line;
@@ -186,10 +184,9 @@ public class DBApp {
 			int idx = 1;
 
 			while ((line = br.readLine()) != null) {
-				String[] values = line.split(",");
+				String[] values = line.split(", ");
 				if (values[0].equals(strTableName)) {
-					System.err.println("here2");
-					Object givenValue = htblColNameValue.get(values[1].substring(1));
+					Object givenValue = htblColNameValue.get(values[1]);
 					tuple[idx++] = givenValue;
 				}
 			}
@@ -291,27 +288,32 @@ public class DBApp {
 	}
 
 	public static String[] sortPaths(String[] paths) {
-		for (int i = 0; i < paths.length - 1; i++) {
-			for (int j = i + 1; j < paths.length; j++) {
-				StringTokenizer st = new StringTokenizer(paths[i], "_");
-				String crr = "";
-				while (st.hasMoreTokens()) {
-					crr = st.nextToken();
-				}
-				int ii = Integer.parseInt(crr);
-				st = new StringTokenizer(paths[j], "_");
-				while (st.hasMoreTokens()) {
-					crr = st.nextToken();
-				}
-				int jj = Integer.parseInt(crr);
-				if (ii >= jj) {
-					String temp = paths[i];
-					paths[i] = paths[j];
-					paths[j] = temp;
-				}
-			}
-		}
+//		for (int i = 0; i < paths.length - 1; i++) {
+//			for (int j = i + 1; j < paths.length; j++) {
+//				StringTokenizer st = new StringTokenizer(paths[i], "_");
+//				String crr = "";
+//				while (st.hasMoreTokens()) {
+//					crr = st.nextToken();
+//				}
+//				int ii = Integer.parseInt(crr);
+//				st = new StringTokenizer(paths[j], "_");
+//				while (st.hasMoreTokens()) {
+//					crr = st.nextToken();
+//				}
+//				int jj = Integer.parseInt(crr);
+//				if (ii >= jj) {
+//					String temp = paths[i];
+//					paths[i] = paths[j];
+//					paths[j] = temp;
+//				}
+//			}
+//		}
+		Arrays.sort(paths,(x,y)->getNumber(x)-getNumber(y));
 		return paths;
+	}
+	static int getNumber(String s) {
+		String[]list=s.split("_");
+		return Integer.parseInt(list[list.length-1]);
 	}
 
 	public static void readTables(String strTableName) {
