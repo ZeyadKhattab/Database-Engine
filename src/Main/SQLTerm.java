@@ -1,4 +1,4 @@
-package NameInsertedBefore;
+package Main;
 
 public class SQLTerm {
 	String strTableName;

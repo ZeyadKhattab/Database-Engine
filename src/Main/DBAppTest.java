@@ -1,10 +1,11 @@
-package NameInsertedBefore;
+package Main;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Properties;
 
 public class DBAppTest {
 
@@ -18,19 +19,16 @@ public class DBAppTest {
 	}
 	static void insert() throws ClassNotFoundException, DBAppException, IOException, ParseException {
 		Hashtable htblColNameValue = new Hashtable();
-		htblColNameValue.put("id", new Integer(5));
-		htblColNameValue.put("name", new String("Yahia"));
-		htblColNameValue.put("gpa", new Double(1.9));
+		htblColNameValue.put("id", 4);
+		htblColNameValue.put("name", new String("Zoz"));
+		htblColNameValue.put("gpa", 1.9);
 		DBApp.insertIntoTable("Student", htblColNameValue);
 	}
-	static void update() throws FileNotFoundException, ClassNotFoundException, DBAppException, IOException, ParseException {
+	static void delete() throws FileNotFoundException, ParseException, IOException {
 		Hashtable htblColNameValue = new Hashtable();
-//		htblColNameValue.put("id", new Integer(5));
-//		htblColNameValue.put("name", new String("Yahia"));
-		htblColNameValue.put("gpa", new Double(-1));
-		DBApp.updateTable("Student", "0", htblColNameValue);
+		htblColNameValue.put("gpa", 1.9);
+		DBApp.deleteFromTable("Student", htblColNameValue);
 	}
-
 	public static void main(String[] args) throws DBAppException, IOException, ClassNotFoundException, ParseException {
 		Properties properties = new Properties();
 		FileInputStream fis = new FileInputStream("config/DBApp.properties");
@@ -38,13 +36,12 @@ public class DBAppTest {
 		DBApp.maxTuplesPerPage = Integer.parseInt(properties.getProperty("MaximumRowsCountinPage"));
 		Bitmap.maxTuplesPerIndex = Integer.parseInt(properties.getProperty("BitmapSize"));
 		String strTableName = "Student";
-//		create();
-//		DBApp.createBitmapIndex(strTableName, "gpa");
-//		insert();
-//		update();
+		create();
+		DBApp.createBitmapIndex(strTableName, "gpa");
+		insert();
+//		delete();
 		DBApp.readTables(strTableName);
-//		Bitmap.readBitmap(strTableName, "gpa");
-//		Bitmap.readBitmap(strTableName, "gpa");
+		Bitmap.readBitmap(strTableName, "gpa");
 		
 	}
 

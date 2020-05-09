@@ -1,4 +1,4 @@
-package NameInsertedBefore;
+package Main;
 
 import java.io.Serializable;
 

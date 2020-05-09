@@ -1,4 +1,4 @@
-package NameInsertedBefore;
+package Main;
 
 public class DBAppException extends Exception {
 	DBAppException(String errorMessage){
