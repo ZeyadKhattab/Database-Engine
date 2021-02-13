@@ -1,5 +1,5 @@
 # Database-Engine
-A Simulation of a Database Engine using bitmap indices implemented in Java.
+Database Engine including bitmap indices implemented in Java.
 All the entries of the database are serialzied and then saved on disk, also the indices are serialized and saved.
 # Getting Started
 * Clone the repo and open it in a Java IDE
@@ -58,12 +58,5 @@ this functions prints the bitmap indices created for a table using the column sp
 * Check the file Main.java and comment/uncomment the calls to insert, delete, create and adjust the parameters in these functions.
 * Be careful not to create the same table/bitmap index twice
 
-# Contribution:
+# About:
 This project was created in May 2019 as a part of an undergraduate Databases Course.
-
-The authors of this project are present in this [commit](https://github.com/ZeyadKhattab/Database-Engine/commit/3f0841a7656df0a8bb75276120470e34dc3fc89f)
-
-
-
-
-
